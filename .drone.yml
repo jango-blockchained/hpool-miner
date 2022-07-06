@@ -18,6 +18,7 @@ steps:
 - name: check
   image: kayuii/github-checker
   commands:
+  - github-checker hpool-dev/chia-miner
   - cat hpool-og/version | github-checker hpool-dev/chia-miner
 
 # ---
