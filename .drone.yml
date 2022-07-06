@@ -10,12 +10,15 @@ steps:
   - pwd
   - ls -al
   - git clone https://github.com/hpool-dev/chia-miner.git /drone/chia-miner
-  - cd /drone/chia-miner
-  - mv /drone/src/hpool-og/version /drone/src/hpool-og/version.old
-  - git describe > /drone/src/hpool-og/version
-  - cd /drone/src
+  # - cd /drone/chia-miner
+  # - mv /drone/src/hpool-og/version /drone/src/hpool-og/version.old
+  # - git describe > /drone/src/hpool-og/version
+  # - cd /drone/src
 
-
+- name: check
+  image: kayuii/github-checker
+  commands:
+  - pwd
 
 # ---
 # kind: pipeline
