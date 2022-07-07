@@ -10,7 +10,6 @@ steps:
   - pwd
   - ls -al
 
-
 - name: check
   image: kayuii/github-checker
   commands:
@@ -41,6 +40,7 @@ steps:
   settings:
     platforms: "amd64,arm64,arm"
     dockerfile: chia-og/Dockerfile
+    build-args: "FILE=chia-og/tmp/linux/hpool-miner-chia-linux-amd64"
     repo: kayuii/hpool-miner
     context: chia-og
   when:

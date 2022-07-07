@@ -2,11 +2,12 @@ FROM ubuntu:20.04
 
 RUN groupadd -r chia && useradd -r -m -g chia chia && usermod -a -G users,chia chia
 
+ARG FILE=tmp/hpool-*
 ENV PATH=$PATH:/opt
 ENV TZ=Asia/Shanghai
 WORKDIR /opt
 
-COPY tmp/hpool-* /opt
+COPY $FILE /opt
 
 RUN apt-get -qq update \
     && apt-get -qq install -y --no-install-recommends ca-certificates curl gosu tini \
