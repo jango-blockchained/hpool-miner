@@ -22,11 +22,16 @@ steps:
   - URL=$(cat hpool-og/version | github-checker hpool-dev/chia-miner)
   - XPROXY=$(echo "$URL" | grep xproxy)
   - HPOOL_LINUX=$(echo "$URL" | grep linux)
-  - mkdir tmp
-  - wget -qO ./tmp/xproxy.zip $XPROXY
-  - wget -qO ./tmp/linux.zip $HPOOL_LINUX
+  - |
+    if [ -n $XPROXY ]; then
+      mkdir tmp
+      wget -qO ./tmp/xproxy.zip $XPROXY
+      wget -qO ./tmp/linux.zip $HPOOL_LINUX
+      github-checker hpool-dev/chia-miner > hpool-og/version
+    fi
   - ls -al tmp
   - ls -al
+  - cat hpool-og/version
   # - |
   #   if [ "${XPROXY##*.}"x = "zip"x ];then
   #     curl -fsSL $XPROXY -o xproxy.zip
