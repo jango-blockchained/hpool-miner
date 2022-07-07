@@ -21,7 +21,7 @@ steps:
   - github-checker hpool-dev/chia-miner
   - URL=$(cat hpool-og/version | github-checker hpool-dev/chia-miner)
   - xproxy=$(echo "$URL" | grep xproxy)
-  - hpool-linux=$(echo "$URL" | grep linux)
+  - hpool-linux=$(echo "$URL" )
   - echo $xproxy
   - echo $hpool-linux
 
