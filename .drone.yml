@@ -40,7 +40,7 @@ steps:
   privileged: true
   settings:
     platforms: "amd64,arm64,arm"
-    dockerfile: Dockerfile
+    dockerfile: chia-og/Dockerfile
     repo: kayuii/hpool-miner
     context: chia-og
   when:
