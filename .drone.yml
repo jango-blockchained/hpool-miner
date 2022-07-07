@@ -43,6 +43,8 @@ steps:
     dockerfile: chia-og/Dockerfile
     repo: kayuii/hpool-miner
     tag: $BUILD_TAG
+  commands:
+  - export BUILD_TAG=$(cat chia-og/version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
   when:
     event:
       exclude:
