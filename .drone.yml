@@ -40,8 +40,9 @@ steps:
   privileged: true
   settings:
     platforms: "amd64,arm64,arm"
-    dockerfile: chia-og/Dockerfile
+    dockerfile: Dockerfile
     repo: kayuii/hpool-miner
+    context: chia-og
   when:
     event:
       exclude:
