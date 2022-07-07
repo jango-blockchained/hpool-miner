@@ -25,14 +25,6 @@ steps:
       wget -qO ./chia-og/tmp/linux.zip $HPOOL_LINUX
       github-checker hpool-dev/chia-miner | tee chia-og/version
     fi
-  # - |
-  #   if [ "${XPROXY##*.}"x = "zip"x ];then
-  #     curl -fsSL $XPROXY -o xproxy.zip
-  #     unzip xproxy.zip -d "release"
-  #   elif [ "${XPROXY##*.}"x = "gz"x ];then
-  #     curl -fsSL $XPROXY | tar xz --strip-components=1 -C "release"
-  #   fi
-  # - ls -al
 
 - name: unzip
   image: alpine/git
@@ -40,7 +32,21 @@ steps:
   - cd chia-og
   - unzip tmp/xproxy.zip -d "tmp"
   - unzip tmp/linux.zip -d "tmp"
+  - export BUILD_TAG=$(cat chia-og/version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
   - ls -al
+
+- name: publish
+  image: thegeeklab/drone-docker-buildx
+  privileged: true
+  settings:
+    platforms: "amd64,arm64,arm"
+    dockerfile: chia-og/Dockerfile
+    repo: kayuii/hpool-miner
+    tag: $BUILD_TAG
+  when:
+    event:
+      exclude:
+      - pull_request
 
 # ---
 # kind: pipeline
