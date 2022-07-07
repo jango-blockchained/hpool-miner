@@ -20,10 +20,10 @@ steps:
   commands:
   - github-checker hpool-dev/chia-miner
   - URL=$(cat hpool-og/version | github-checker hpool-dev/chia-miner)
-  - xproxy=$(echo "$URL" | grep xproxy)
-  - hpool-linux=$(echo "$URL" )
-  - echo $xproxy
-  - echo $hpool-linux
+  - XPROXY=$(echo "$URL" | grep xproxy)
+  - HPOOL_LINUX=$(echo "$URL" | grep linux)
+  - echo $XPROXY
+  - echo $HPOOL_LINUX
 
 # ---
 # kind: pipeline
