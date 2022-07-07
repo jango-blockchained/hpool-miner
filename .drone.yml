@@ -44,7 +44,12 @@ steps:
     repo: kayuii/hpool-miner
     tag: $BUILD_TAG
   commands:
+  - echo $BUILD_TAG
   - export BUILD_TAG=$(cat chia-og/version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
+  - /usr/local/bin/dockerd --data-root /var/lib/docker --host=unix:///var/run/docker.sock
+  - /usr/local/bin/docker buildx create --use
+  - /usr/local/bin/docker buildx ls
+  - /usr/local/bin/docker buildx build --rm=true -f chia-og/Dockerfile . --push --pull=true --build-arg DOCKER_IMAGE_CREATED=2022-07-07T03:45:05Z --platform amd64,arm64,arm -t kayuii/hpool-miner:$BUILD_TAG
   when:
     event:
       exclude:
