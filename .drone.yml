@@ -9,29 +9,22 @@ steps:
   commands:
   - pwd
   - ls -al
-  # - git clone https://github.com/hpool-dev/chia-miner.git /drone/chia-miner
-  # - cd /drone/chia-miner
-  # - mv /drone/src/hpool-og/version /drone/src/hpool-og/version.old
-  # - git describe > /drone/src/hpool-og/version
-  # - cd /drone/src
+
 
 - name: check
   image: kayuii/github-checker
   commands:
   - github-checker hpool-dev/chia-miner
-  - URL=$(cat hpool-og/version | github-checker hpool-dev/chia-miner)
+  - URL=$(cat chia-og/version | github-checker hpool-dev/chia-miner)
   - XPROXY=$(echo "$URL" | grep xproxy)
   - HPOOL_LINUX=$(echo "$URL" | grep linux)
   - |
     if [ -n $XPROXY ]; then
-      mkdir tmp
-      wget -qO ./tmp/xproxy.zip $XPROXY
-      wget -qO ./tmp/linux.zip $HPOOL_LINUX
-      github-checker hpool-dev/chia-miner > hpool-og/version
+      mkdir -p chia-og/tmp
+      wget -qO ./chia-og/tmp/xproxy.zip $XPROXY
+      wget -qO ./chia-og/tmp/linux.zip $HPOOL_LINUX
+      github-checker hpool-dev/chia-miner | tee chia-og/version
     fi
-  - ls -al tmp
-  - ls -al
-  - cat hpool-og/version
   # - |
   #   if [ "${XPROXY##*.}"x = "zip"x ];then
   #     curl -fsSL $XPROXY -o xproxy.zip
@@ -40,6 +33,14 @@ steps:
   #     curl -fsSL $XPROXY | tar xz --strip-components=1 -C "release"
   #   fi
   # - ls -al
+
+- name: unzip
+  image: alpine/git
+  commands:
+  - cd chia-og
+  - unzip tmp/xproxy.zip -d "tmp"
+  - unzip tmp/linux.zip -d "tmp"
+  - ls -al
 
 # ---
 # kind: pipeline
