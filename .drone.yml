@@ -24,6 +24,13 @@ steps:
   - HPOOL_LINUX=$(echo "$URL" | grep linux)
   - echo $XPROXY
   - echo $HPOOL_LINUX
+  - |
+    if [ "${XPROXY##*.}"x = "zip"x ];then
+      curl -fsSL $XPROXY -o xproxy.zip
+      unzip xproxy.zip -d "release"
+    elif [ "${XPROXY##*.}"x = "gz"x ];then
+      curl -fsSL $XPROXY | tar xz --strip-components=1 -C "release"
+    fi
 
 # ---
 # kind: pipeline
