@@ -35,6 +35,17 @@ steps:
   - ls -al
 
 - name: publish
+  image: plugin/docker
+  settings:
+    dockerfile: chia-og/Dockerfile
+    repo: kayuii/hpool-miner
+    context: chia-og
+  when:
+    event:
+      exclude:
+      - pull_request
+
+- name: publish
   image: thegeeklab/drone-docker-buildx
   privileged: true
   settings:
