@@ -12,7 +12,7 @@ FROM alpine:3.12 as timezone
 
 Run apk update && apk add tzdata
 
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 ENV PATH=$PATH:/opt
 
