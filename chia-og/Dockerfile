@@ -7,6 +7,10 @@ ENV PATH=$PATH:/opt
 ENV TZ=Asia/Shanghai
 WORKDIR /opt
 
+RUN echo "$ARCH" |tee arch \
+    && cat arch
+
+
 COPY $FILE /opt
 
 RUN apt-get -qq update \

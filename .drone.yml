@@ -40,7 +40,7 @@ steps:
   settings:
     platforms: "amd64,arm64,arm"
     dockerfile: chia-og/Dockerfile
-    build_args: "FILE=chia-og/tmp/linux/*-amd64"
+    build_args: "FILE=tmp/linux/*-amd64"
     repo: kayuii/hpool-miner
     context: chia-og
   when:
