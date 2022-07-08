@@ -1,24 +1,31 @@
-FROM ubuntu:20.04
+FROM alpine:3.15 as download
 
-RUN groupadd -r chia && useradd -r -m -g chia chia && usermod -a -G users,chia chia \
+ARG FILE=tmp/linux/*-
+
+RUN apk update && apk --no-cache add bash tzdata dpkg \
+  && cp /usr/share/zoneinfo/$TZ /etc/localtime \
+  && echo $TZ > /etc/timezone \
   && export ARCH=$(dpkg --print-architecture) \
   && if [ "$ARCH" = "amd64" ] ; then export ARCH=amd64; fi \
   && if [ "$ARCH" = "arm64" ] ; then export ARCH=aarch64; fi \
   && if [ "$ARCH" = "arm" ] ; then export ARCH=arm; fi
 
-ARG FILE=tmp/linux/*-
+COPY $FILE$ARCH /opt
+
+FROM ubuntu:20.04
+
 ENV PATH=$PATH:/opt
-ENV TZ=Asia/Shanghai
 WORKDIR /opt
 
-COPY $FILE$ARCH /opt
+COPY --from=download /etc/localtime /etc
+COPY --from=download /etc/timezone /etc
+COPY --from=download /opt/hpool-* /opt/hpool-chia-miner
 
 RUN apt-get -qq update \
     && apt-get -qq install -y --no-install-recommends ca-certificates curl gosu tini \
-    && cp /usr/share/zoneinfo/$TZ /etc/localtime \
-    && echo $TZ > /etc/timezone \
-    && cd /opt/ \
-    && mv hpool-* hpool-chia-miner \
+    && groupadd -r chia \
+    && useradd -r -m -g chia chia \
+    && usermod -a -G users,chia chia \
     && ls -al /opt/ \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
