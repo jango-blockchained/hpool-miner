@@ -12,6 +12,7 @@ steps:
   commands:
   - pwd
   - ls -al
+  - export BUILD_TAG=$(cat chia-og/version)
 
 - name: check
   image: kayuii/github-checker
@@ -27,11 +28,6 @@ steps:
       wget -qO ./chia-og/tmp/linux.zip $HPOOL_LINUX
       github-checker hpool-dev/chia-miner | tee chia-og/version
     fi
-  - cd chia-og
-  - unzip tmp/xproxy.zip -d "tmp"
-  - unzip tmp/linux.zip -d "tmp"
-  - export BUILD_TAG=$(cat version)
-  - ls -al
 
 - name: unzip
   image: alpine/git
