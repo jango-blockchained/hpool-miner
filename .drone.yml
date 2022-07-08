@@ -3,6 +3,9 @@ kind: pipeline
 type: docker
 name: check_chia_og
 
+environment:
+  BUILD_TAG: unknown
+
 steps:
 - name: clone_chia_og
   image: alpine/git
@@ -24,14 +27,20 @@ steps:
       wget -qO ./chia-og/tmp/linux.zip $HPOOL_LINUX
       github-checker hpool-dev/chia-miner | tee chia-og/version
     fi
+  - cd chia-og
+  - unzip tmp/xproxy.zip -d "tmp"
+  - unzip tmp/linux.zip -d "tmp"
+  - export BUILD_TAG=$(cat version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
+  - ls -al
 
 - name: unzip
   image: alpine/git
   commands:
+  - echo $BUILD_TAG
   - cd chia-og
   - unzip tmp/xproxy.zip -d "tmp"
   - unzip tmp/linux.zip -d "tmp"
-  - export BUILD_TAG=$(cat chia-og/version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
+  - export BUILD_TAG=$(cat version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
   - ls -al
 
 - name: try
