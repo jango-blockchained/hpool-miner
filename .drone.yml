@@ -3,6 +3,10 @@ kind: pipeline
 type: docker
 name: check_chia_og
 
+trigger:
+  event:
+  - cron
+
 steps:
 - name: check
   image: kayuii/github-checker
@@ -47,19 +51,29 @@ steps:
     cron:
     - weekly
 
-# ---
-# kind: pipeline
-# type: docker
-# name: default
+---
+kind: pipeline
+type: docker
+name: build-tag
 
-# platform:
-#   os: linux
-#   arch: amd64
+platform:
+  os: linux
+  arch: amd64
 
-# trigger:
-#   ref:
-#   - refs/heads/master
-#   - refs/tags/**
+trigger:
+  ref:
+  - refs/tags/**
+
+- name: publish-chia-og
+  image: thegeeklab/drone-docker-buildx
+  privileged: true
+  settings:
+    platforms: "linux/amd64,linux/arm64,linux/arm"
+    dockerfile: chia-og/Dockerfile
+    repo: kayuii/hpool-miner
+    context: chia-og
+  when:
+  - refs/tags/**
 
 # steps:
 # - name: env
