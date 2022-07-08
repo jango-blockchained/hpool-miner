@@ -39,24 +39,12 @@ steps:
   - export BUILD_TAG=$(cat version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
   - ls -al
 
-- name: try
-  image: plugins/docker
-  settings:
-    dockerfile: chia-og/Dockerfile
-    repo: kayuii/hpool-miner
-    context: chia-og
-  when:
-    event:
-      exclude:
-      - pull_request
-
 - name: publish
   image: thegeeklab/drone-docker-buildx
   privileged: true
   settings:
     platforms: "amd64,arm64,arm"
     dockerfile: chia-og/Dockerfile
-    build_args: "FILE=tmp/linux/*-amd64"
     repo: kayuii/hpool-miner
     context: chia-og
   when:
