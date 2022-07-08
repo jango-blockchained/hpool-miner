@@ -30,7 +30,7 @@ steps:
   - cd chia-og
   - unzip tmp/xproxy.zip -d "tmp"
   - unzip tmp/linux.zip -d "tmp"
-  - export BUILD_TAG=$(cat version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
+  - export BUILD_TAG=$(cat version)
   - ls -al
 
 - name: unzip
@@ -49,7 +49,6 @@ steps:
     dockerfile: chia-og/Dockerfile
     repo: kayuii/hpool-miner
     context: chia-og
-    debug: true
   when:
     event:
       exclude:
