@@ -1,14 +1,12 @@
 FROM ubuntu:20.04 as download
 
-ARG FILE=tmp/linux/*-
+COPY / /opt
 
 RUN export ARCH=$(dpkg --print-architecture) \
-  && echo $ARCH \
   && if [ "$ARCH" = "amd64" ] ; then export ARCH=amd64; fi \
   && if [ "$ARCH" = "arm64" ] ; then export ARCH=aarch64; fi \
-  && if [ "$ARCH" = "arm" ] ; then export ARCH=arm; fi
-
-COPY $FILE$ARCH /opt
+  && if [ "$ARCH" = "arm" ] ; then export ARCH=arm; fi \
+  && find -name "*$ARCH" | xargs mv -t /opt/
 
 FROM alpine:3.12 as timezone
 
