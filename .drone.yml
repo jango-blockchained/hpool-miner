@@ -35,7 +35,7 @@ steps:
   - ls -al
 
 - name: try
-  image: plugin/docker
+  image: plugins/docker
   settings:
     dockerfile: chia-og/Dockerfile
     repo: kayuii/hpool-miner
