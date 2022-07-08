@@ -1,6 +1,7 @@
 FROM alpine:3.15 as download
 
 ARG FILE=tmp/linux/*-
+ENV TZ=Asia/Shanghai
 
 RUN apk update && apk --no-cache add bash tzdata dpkg \
   && cp /usr/share/zoneinfo/$TZ /etc/localtime \
