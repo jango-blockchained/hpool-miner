@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:20
 
 RUN groupadd -r chia && useradd -r -m -g chia chia && usermod -a -G users,chia chia \
   && export ARCH=$(dpkg --print-architecture) \
