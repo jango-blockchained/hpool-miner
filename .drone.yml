@@ -27,7 +27,7 @@ steps:
       unzip tmp/xproxy.zip -d "tmp"
       unzip tmp/linux.zip -d "tmp"
     fi
-  - return false
+  - false
 
   # - export BUILD_TAG=$(cat version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
 
