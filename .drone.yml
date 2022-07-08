@@ -27,20 +27,22 @@ steps:
       unzip tmp/xproxy.zip -d "tmp"
       unzip tmp/linux.zip -d "tmp"
     fi
+  - return false
+
   # - export BUILD_TAG=$(cat version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
 
-- name: publish
-  image: thegeeklab/drone-docker-buildx
-  privileged: true
-  settings:
-    platforms: "linux/amd64,linux/arm64,linux/arm"
-    dockerfile: chia-og/Dockerfile
-    repo: kayuii/hpool-miner
-    context: chia-og
-  when:
-    event:
-      exclude:
-      - pull_request
+# - name: publish
+#   image: thegeeklab/drone-docker-buildx
+#   privileged: true
+#   settings:
+#     platforms: "linux/amd64,linux/arm64,linux/arm"
+#     dockerfile: chia-og/Dockerfile
+#     repo: kayuii/hpool-miner
+#     context: chia-og
+#   when:
+#     event:
+#       exclude:
+#       - pull_request
 
 # ---
 # kind: pipeline
