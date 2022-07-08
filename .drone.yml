@@ -34,7 +34,7 @@ steps:
   - export BUILD_TAG=$(cat chia-og/version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
   - ls -al
 
-- name: publish
+- name: try
   image: plugin/docker
   settings:
     dockerfile: chia-og/Dockerfile
