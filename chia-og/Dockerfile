@@ -1,26 +1,27 @@
 FROM ubuntu:20.04 as download
 
 ARG FILE=tmp/linux/*-
-ENV TZ=Asia/Shanghai
 
-RUN apt-get -qq update \
-  && DEBIAN_FRONTEND="noninteractive" apt-get -qq install -y --no-install-recommends tzdata dpkg \
-  && cp /usr/share/zoneinfo/$TZ /etc/localtime \
-  && echo $TZ > /etc/timezone \
-  && export ARCH=$(dpkg --print-architecture) \
+RUN export ARCH=$(dpkg --print-architecture) \
+  && echo $ARCH \
   && if [ "$ARCH" = "amd64" ] ; then export ARCH=amd64; fi \
   && if [ "$ARCH" = "arm64" ] ; then export ARCH=aarch64; fi \
   && if [ "$ARCH" = "arm" ] ; then export ARCH=arm; fi
 
 COPY $FILE$ARCH /opt
 
+FROM alpine:3.12 as timezone
+
+Run apk update && apk add tzdata
+
 FROM ubuntu:20.04
 
 ENV PATH=$PATH:/opt
+
+ENV TZ=Asia/Shanghai
 WORKDIR /opt
 
-COPY --from=download /etc/localtime /etc
-COPY --from=download /etc/timezone /etc
+COPY --from=timezone /usr/share/zoneinfo/$TZ /etc/localtime
 COPY --from=download /opt/hpool-* /opt/hpool-chia-miner
 
 RUN apt-get -qq update \
@@ -28,6 +29,7 @@ RUN apt-get -qq update \
     && groupadd -r chia \
     && useradd -r -m -g chia chia \
     && usermod -a -G users,chia chia \
+    && echo $TZ > /etc/timezone \
     && ls -al /opt/ \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
