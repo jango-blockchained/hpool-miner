@@ -3,13 +3,11 @@ kind: pipeline
 type: docker
 name: check_chia_og
 
-steps:
-- name: clone_chia_og
-  image: alpine/git
-  commands:
-  - pwd
-  - ls -al
+trigger:
+  event:
+  - cron
 
+steps:
 - name: check
   image: kayuii/github-checker
   commands:
@@ -23,44 +21,59 @@ steps:
       wget -qO ./chia-og/tmp/xproxy.zip $XPROXY
       wget -qO ./chia-og/tmp/linux.zip $HPOOL_LINUX
       github-checker hpool-dev/chia-miner | tee chia-og/version
+      cd chia-og
+      unzip tmp/xproxy.zip -d "tmp"
+      unzip tmp/linux.zip -d "tmp"
+    else
+      false
     fi
+  # - export BUILD_TAG=$(cat version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
 
-- name: unzip
+- name: update-tag
   image: alpine/git
   commands:
-  - cd chia-og
-  - unzip tmp/xproxy.zip -d "tmp"
-  - unzip tmp/linux.zip -d "tmp"
-  - export BUILD_TAG=$(cat chia-og/version | awk '{gsub(/\(|\)/,"");printf $2 "-" $3}')
-  - ls -al
+  - ls -lARFh
+  when:
+    status:
+    - success
 
-- name: publish
+- name: publish-chia-og
   image: thegeeklab/drone-docker-buildx
   privileged: true
   settings:
-    platforms: "amd64,arm64,arm"
+    platforms: "linux/amd64,linux/arm64,linux/arm"
     dockerfile: chia-og/Dockerfile
-    build_args: "FILE=chia-og/tmp/linux/*-amd64"
     repo: kayuii/hpool-miner
     context: chia-og
   when:
     event:
-      exclude:
-      - pull_request
+    - cron
+    cron:
+    - weekly
 
-# ---
-# kind: pipeline
-# type: docker
-# name: default
+---
+kind: pipeline
+type: docker
+name: build-tag
 
-# platform:
-#   os: linux
-#   arch: amd64
+platform:
+  os: linux
+  arch: amd64
 
-# trigger:
-#   ref:
-#   - refs/heads/master
-#   - refs/tags/**
+trigger:
+  ref:
+  - refs/tags/**
+
+- name: publish-chia-og
+  image: thegeeklab/drone-docker-buildx
+  privileged: true
+  settings:
+    platforms: "linux/amd64,linux/arm64,linux/arm"
+    dockerfile: chia-og/Dockerfile
+    repo: kayuii/hpool-miner
+    context: chia-og
+  when:
+  - refs/tags/**
 
 # steps:
 # - name: env
