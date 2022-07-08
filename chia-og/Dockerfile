@@ -4,7 +4,7 @@ ARG FILE=tmp/linux/*-
 ENV TZ=Asia/Shanghai
 
 RUN apt-get -qq update \
-  && apt-get -qq install -y --no-install-recommends tzdata dpkg \
+  && DEBIAN_FRONTEND="noninteractive" apt-get -qq install -y --no-install-recommends tzdata dpkg \
   && cp /usr/share/zoneinfo/$TZ /etc/localtime \
   && echo $TZ > /etc/timezone \
   && export ARCH=$(dpkg --print-architecture) \
