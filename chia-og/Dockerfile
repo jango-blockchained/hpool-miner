@@ -1,9 +1,10 @@
-FROM alpine:3.15 as download
+FROM ubuntu:20.04 as download
 
 ARG FILE=tmp/linux/*-
 ENV TZ=Asia/Shanghai
 
-RUN apk update && apk --no-cache add bash tzdata dpkg \
+RUN apt-get -qq update \
+  && apt-get -qq install -y --no-install-recommends tzdata dpkg \
   && cp /usr/share/zoneinfo/$TZ /etc/localtime \
   && echo $TZ > /etc/timezone \
   && export ARCH=$(dpkg --print-architecture) \
